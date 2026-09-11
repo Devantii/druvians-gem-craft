@@ -10,7 +10,7 @@ type Search = { category?: string };
 
 export const Route = createFileRoute("/catalogue/")({
   validateSearch: (search: Record<string, unknown>): Search =>
-    typeof search.category === "string" ? { category: search.category } : {},
+    typeof search["category"] === "string" ? { category: search["category"] } : {},
   head: () => ({
     meta: [
       { title: "Corporate Gift Catalogue | Druvians" },

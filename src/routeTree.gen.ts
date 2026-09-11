@@ -10,33 +10,76 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as CatalogueRouteImport } from './routes/catalogue'
+import { Route as CatalogueIndexRouteImport } from './routes/catalogue.index'
+import { Route as CatalogueSlugRouteImport } from './routes/catalogue.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogueRoute = CatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogueIndexRoute = CatalogueIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CatalogueRoute,
+} as any)
+const CatalogueSlugRoute = CatalogueSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CatalogueRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/catalogue': typeof CatalogueRouteWithChildren
+  '/catalogue/$slug': typeof CatalogueSlugRoute
+  '/catalogue/': typeof CatalogueIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/catalogue/$slug': typeof CatalogueSlugRoute
+  '/catalogue': typeof CatalogueIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/catalogue': typeof CatalogueRouteWithChildren
+  '/catalogue/$slug': typeof CatalogueSlugRoute
+  '/catalogue/': typeof CatalogueIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/about' | '/catalogue' | '/catalogue/$slug' | '/catalogue/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/about' | '/catalogue/$slug' | '/catalogue'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/catalogue'
+    | '/catalogue/$slug'
+    | '/catalogue/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  CatalogueRoute: typeof CatalogueRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +91,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalogue': {
+      id: '/catalogue'
+      path: '/catalogue'
+      fullPath: '/catalogue'
+      preLoaderRoute: typeof CatalogueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalogue/': {
+      id: '/catalogue/'
+      path: '/'
+      fullPath: '/catalogue/'
+      preLoaderRoute: typeof CatalogueIndexRouteImport
+      parentRoute: typeof CatalogueRoute
+    }
+    '/catalogue/$slug': {
+      id: '/catalogue/$slug'
+      path: '/$slug'
+      fullPath: '/catalogue/$slug'
+      preLoaderRoute: typeof CatalogueSlugRouteImport
+      parentRoute: typeof CatalogueRoute
+    }
   }
 }
 
+interface CatalogueRouteChildren {
+  CatalogueSlugRoute: typeof CatalogueSlugRoute
+  CatalogueIndexRoute: typeof CatalogueIndexRoute
+}
+
+const CatalogueRouteChildren: CatalogueRouteChildren = {
+  CatalogueSlugRoute: CatalogueSlugRoute,
+  CatalogueIndexRoute: CatalogueIndexRoute,
+}
+
+const CatalogueRouteWithChildren = CatalogueRoute._addFileChildren(
+  CatalogueRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  CatalogueRoute: CatalogueRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
