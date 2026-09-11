@@ -11,9 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CatalogueRouteImport } from './routes/catalogue'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as CatalogueIndexRouteImport } from './routes/catalogue.index'
 import { Route as CatalogueSlugRouteImport } from './routes/catalogue.$slug'
 
@@ -25,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CatalogueRoute = CatalogueRouteImport.update({
@@ -42,6 +50,16 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CatalogueIndexRoute = CatalogueIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -56,17 +74,23 @@ const CatalogueSlugRoute = CatalogueSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/catalogue': typeof CatalogueRouteWithChildren
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/catalogue/$slug': typeof CatalogueSlugRoute
   '/catalogue/': typeof CatalogueIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/catalogue/$slug': typeof CatalogueSlugRoute
   '/catalogue': typeof CatalogueIndexRoute
 }
@@ -74,9 +98,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/catalogue': typeof CatalogueRouteWithChildren
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/catalogue/$slug': typeof CatalogueSlugRoute
   '/catalogue/': typeof CatalogueIndexRoute
 }
@@ -85,20 +112,35 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/auth'
     | '/catalogue'
     | '/contact'
     | '/faq'
+    | '/privacy'
+    | '/terms'
     | '/catalogue/$slug'
     | '/catalogue/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/faq' | '/catalogue/$slug' | '/catalogue'
+  to:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/contact'
+    | '/faq'
+    | '/privacy'
+    | '/terms'
+    | '/catalogue/$slug'
+    | '/catalogue'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/auth'
     | '/catalogue'
     | '/contact'
     | '/faq'
+    | '/privacy'
+    | '/terms'
     | '/catalogue/$slug'
     | '/catalogue/'
   fileRoutesById: FileRoutesById
@@ -106,9 +148,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AuthRoute: typeof AuthRoute
   CatalogueRoute: typeof CatalogueRouteWithChildren
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -125,6 +170,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/catalogue': {
@@ -146,6 +198,20 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/catalogue/': {
@@ -182,9 +248,12 @@ const CatalogueRouteWithChildren = CatalogueRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AuthRoute: AuthRoute,
   CatalogueRoute: CatalogueRouteWithChildren,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
+  PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
