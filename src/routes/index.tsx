@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://druvians.com/" },
-      { rel: "preload", as: "image", href: heroImage, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: heroImage },
     ],
   }),
   component: Home,
@@ -81,7 +81,7 @@ function Home() {
                   Explore the catalogue <ArrowRight className="ml-2 size-4" aria-hidden="true" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="onNavy">
                 <a href={SITE.phoneHref}>Call {SITE.phone}</a>
               </Button>
             </div>
@@ -195,7 +195,7 @@ function Home() {
             <Button asChild size="lg">
               <Link to="/contact">Request a quote</Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
+            <Button asChild size="lg" variant="onNavy">
               <a href={SITE.whatsapp} target="_blank" rel="noreferrer noopener">
                 WhatsApp us
               </a>
