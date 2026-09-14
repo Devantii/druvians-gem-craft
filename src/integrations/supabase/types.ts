@@ -44,6 +44,36 @@ export type Database = {
         }
         Relationships: []
       }
+      faqs: {
+        Row: {
+          answer: string
+          created_at: string
+          id: string
+          is_active: boolean
+          question: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          question: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          question?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           company: string
@@ -147,6 +177,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      site_pages: {
+        Row: {
+          body: string
+          created_at: string
+          eyebrow: string
+          id: string
+          meta_description: string
+          meta_title: string
+          slug: string
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          eyebrow?: string
+          id?: string
+          meta_description?: string
+          meta_title?: string
+          slug: string
+          subtitle?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          eyebrow?: string
+          id?: string
+          meta_description?: string
+          meta_title?: string
+          slug?: string
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {

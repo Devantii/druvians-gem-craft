@@ -6,86 +6,69 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { SITE } from "@/lib/site";
-
-const FAQS = [
-  {
-    q: "What is the minimum order quantity?",
-    a: "Most gifts start at 25 pieces, and awards start at 10. Hampers can be curated from 25 sets. Tell us your headcount and we will confirm.",
-  },
-  {
-    q: "How long does an order take?",
-    a: "Standard branded orders ship in 7 to 12 working days after sample approval. Festive periods need 3 to 4 weeks, so plan early.",
-  },
-  {
-    q: "Can I see a sample before bulk production?",
-    a: "Yes. We share digital mockups free of cost, and physical samples are chargeable but adjusted against your final invoice.",
-  },
-  {
-    q: "Do you deliver to individual home addresses?",
-    a: "Yes. We handle both bulk delivery to one office and individual dispatch to hundreds of home addresses with tracking for each parcel.",
-  },
-  {
-    q: "What branding methods do you offer?",
-    a: "Laser engraving, embroidery, UV printing, screen printing, debossing, foil stamping, metal badges and full custom packaging.",
-  },
-  {
-    q: "How is pricing decided?",
-    a: "Pricing depends on quantity, branding method and packaging. The catalogue shows indicative starting prices exclusive of GST and freight.",
-  },
-  {
-    q: "Do you support GST invoicing and vendor onboarding?",
-    a: "Yes. We issue GST invoices and can complete your standard vendor onboarding and compliance documentation.",
-  },
-];
+import { fetchFaqs, fetchPage } from "@/lib/content";
+import { PageBody } from "@/components/site/PageBody";
 
 export const Route = createFileRoute("/faq")({
-  head: () => ({
-    meta: [
-      { title: "FAQ | Druvians Corporate Gifting" },
-      {
-        name: "description",
-        content:
-          "Answers on minimum order quantities, timelines, samples, branding methods, delivery and GST invoicing for Druvians corporate gifts.",
-      },
-      { property: "og:title", content: "Druvians FAQ" },
-      {
-        property: "og:description",
-        content: "Order quantities, timelines, samples, branding, delivery and invoicing answered.",
-      },
-      { property: "og:url", content: "https://druvians.com/faq" },
-      { property: "og:type", content: "website" },
-    ],
-    links: [{ rel: "canonical", href: "https://druvians.com/faq" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQS.map((f) => ({
-            "@type": "Question",
-            name: f.q,
-            acceptedAnswer: { "@type": "Answer", text: f.a },
-          })),
-        }),
-      },
-    ],
-  }),
+  loader: async () => {
+    const [page, faqs] = await Promise.all([fetchPage("faq"), fetchFaqs()]);
+    return { page, faqs };
+  },
+  head: ({ loaderData }) => {
+    const title = loaderData?.page?.meta_title || "FAQ | Druvians Corporate Gifting";
+    const description =
+      loaderData?.page?.meta_description ||
+      "Answers on minimum order quantities, timelines, samples, branding methods, delivery and GST invoicing for Druvians corporate gifts.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:url", content: "https://druvians.com/faq" },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: "https://druvians.com/faq" }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: (loaderData?.faqs ?? []).map((f) => ({
+              "@type": "Question",
+              name: f.question,
+              acceptedAnswer: { "@type": "Answer", text: f.answer },
+            })),
+          }),
+        },
+      ],
+    };
+  },
   component: Faq,
 });
 
 function Faq() {
+  const { page, faqs } = Route.useLoaderData();
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
-      <p className="eyebrow">Questions</p>
-      <h1 className="mt-3 font-display text-5xl font-semibold">Frequently asked</h1>
+      <p className="eyebrow">{page?.eyebrow || "Questions"}</p>
+      <h1 className="mt-3 font-display text-5xl font-semibold">{page?.title || "Frequently asked"}</h1>
+      {page?.subtitle ? (
+        <p className="mt-3 text-sm text-muted-foreground">{page.subtitle}</p>
+      ) : null}
+      <PageBody body={page?.body ?? ""} />
 
       <Accordion type="single" collapsible className="mt-10">
-        {FAQS.map((item) => (
-          <AccordionItem key={item.q} value={item.q}>
-            <AccordionTrigger className="text-left font-display text-lg">{item.q}</AccordionTrigger>
+        {faqs.map((item) => (
+          <AccordionItem key={item.id} value={item.id}>
+            <AccordionTrigger className="text-left font-display text-lg">
+              {item.question}
+            </AccordionTrigger>
             <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-              {item.a}
+              {item.answer}
             </AccordionContent>
           </AccordionItem>
         ))}
