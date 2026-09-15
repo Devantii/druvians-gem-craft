@@ -12,6 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatPrice } from "@/lib/site";
+import { CategoryManager } from "@/components/admin/CategoryManager";
+import { FaqManager } from "@/components/admin/FaqManager";
+import { PageManager } from "@/components/admin/PageManager";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -187,8 +190,11 @@ function Admin() {
       </div>
 
       <Tabs defaultValue="products" className="mt-10">
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="products">Products ({products.data?.length ?? 0})</TabsTrigger>
+          <TabsTrigger value="categories">Collections</TabsTrigger>
+          <TabsTrigger value="pages">Pages</TabsTrigger>
+          <TabsTrigger value="faqs">FAQ</TabsTrigger>
           <TabsTrigger value="inquiries">Enquiries ({inquiries.data?.length ?? 0})</TabsTrigger>
         </TabsList>
 
@@ -400,6 +406,18 @@ function Admin() {
               </tbody>
             </table>
           </div>
+        </TabsContent>
+
+        <TabsContent value="categories" className="mt-6">
+          <CategoryManager />
+        </TabsContent>
+
+        <TabsContent value="pages" className="mt-6">
+          <PageManager />
+        </TabsContent>
+
+        <TabsContent value="faqs" className="mt-6">
+          <FaqManager />
         </TabsContent>
 
         <TabsContent value="inquiries" className="mt-6">
