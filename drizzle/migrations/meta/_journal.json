@@ -29,6 +29,13 @@
       "when": 1789393071615,
       "tag": "0003_create_site_pages_and_faqs",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789458852269,
+      "tag": "0004_restrict_inquiry_insert_fields",
+      "breakpoints": true
     }
   ]
 }
