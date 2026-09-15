@@ -190,8 +190,11 @@ function Admin() {
       </div>
 
       <Tabs defaultValue="products" className="mt-10">
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="products">Products ({products.data?.length ?? 0})</TabsTrigger>
+          <TabsTrigger value="categories">Collections</TabsTrigger>
+          <TabsTrigger value="pages">Pages</TabsTrigger>
+          <TabsTrigger value="faqs">FAQ</TabsTrigger>
           <TabsTrigger value="inquiries">Enquiries ({inquiries.data?.length ?? 0})</TabsTrigger>
         </TabsList>
 
