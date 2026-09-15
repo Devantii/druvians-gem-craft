@@ -408,6 +408,18 @@ function Admin() {
           </div>
         </TabsContent>
 
+        <TabsContent value="categories" className="mt-6">
+          <CategoryManager />
+        </TabsContent>
+
+        <TabsContent value="pages" className="mt-6">
+          <PageManager />
+        </TabsContent>
+
+        <TabsContent value="faqs" className="mt-6">
+          <FaqManager />
+        </TabsContent>
+
         <TabsContent value="inquiries" className="mt-6">
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-sm">
