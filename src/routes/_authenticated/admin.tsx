@@ -12,6 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatPrice } from "@/lib/site";
+import { CategoryManager } from "@/components/admin/CategoryManager";
+import { FaqManager } from "@/components/admin/FaqManager";
+import { PageManager } from "@/components/admin/PageManager";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
