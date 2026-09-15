@@ -14,7 +14,7 @@ export const SITE = {
   phone: "+91 9152307515",
   phoneHref: "tel:+919152307515",
   whatsapp: "https://wa.me/919152307515",
-  email: "hello@druvians.com",
+  email: "info@druvians.com",
   address: "Mumbai, Maharashtra, India",
   hours: "Monday to Saturday, 10:00 - 19:00 IST",
 };
