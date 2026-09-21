@@ -8,4 +8,6 @@
 - [x] Full browser test of every page and the enquiry form
 - [ ] Email notifications for new enquiries — blocked: needs sender domain (druvians.com) verified via email setup
 - [ ] Publish and connect druvians.com — waiting on user action for DNS records
-- [ ] Verify every page on mobile and desktop widths, then publish
+- [x] Verify every page on mobile and desktop widths, then publish
+- [x] Netlify deploy: fixed admin lockout (wrong workspace env vars), auto-confirm sign-in, fallback admin role check
+- [ ] User creates admin account druvians@gmail.com at /admin on Netlify, then lock sign-ups
