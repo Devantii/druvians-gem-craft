@@ -80,16 +80,63 @@ function Admin() {
   const queryClient = useQueryClient();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
+  const [diagnostic, setDiagnostic] = useState<string>("");
+  const backendHost = String(import.meta.env["VITE_SUPABASE_URL"] ?? "not configured");
+  const [accountEmail, setAccountEmail] = useState<string>("");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    supabase.rpc("claim_first_admin").then(({ data, error }) => {
-      if (error) {
+    let cancelled = false;
+
+    const check = async () => {
+      setIsAdmin(null);
+      setDiagnostic("");
+
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const user = userData?.user ?? null;
+      if (cancelled) return;
+      setAccountEmail(user?.email ?? "");
+
+      if (userError || !user) {
         setIsAdmin(false);
+        setDiagnostic(
+          userError?.message ??
+            "No signed-in account was found. Sign in again, then reload this page.",
+        );
         return;
       }
-      setIsAdmin(Boolean(data));
-    });
-  }, []);
+
+      const claim = await supabase.rpc("claim_first_admin");
+      if (cancelled) return;
+
+      if (!claim.error && claim.data === true) {
+        setIsAdmin(true);
+        return;
+      }
+
+      // Fall back to a direct role lookup so an existing admin is never locked out
+      // when the claim call is rejected (for example because another admin exists).
+      const roles = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin");
+      if (cancelled) return;
+
+      if (!roles.error && (roles.data?.length ?? 0) > 0) {
+        setIsAdmin(true);
+        return;
+      }
+
+      setIsAdmin(false);
+      setDiagnostic(claim.error?.message ?? roles.error?.message ?? "");
+    };
+
+    void check();
+    return () => {
+      cancelled = true;
+    };
+  }, [attempt]);
 
   const products = useQuery({ ...adminProductsQuery, enabled: isAdmin === true });
   const categories = useQuery(categoriesQuery);
@@ -162,12 +209,31 @@ function Admin() {
       <div className="mx-auto max-w-2xl px-4 py-20">
         <h1 className="font-display text-4xl font-semibold">Admin access required</h1>
         <p className="mt-4 text-sm text-muted-foreground">
-          This account does not have catalogue permissions. Ask an existing administrator to grant
-          you access, then reload this page.
+          This account does not have catalogue permissions yet. If you are the owner, make sure the
+          site is connected to the right workspace, then try again.
         </p>
-        <Button className="mt-8" variant="outline" onClick={signOut}>
-          Sign out
-        </Button>
+        <dl className="mt-6 space-y-1 rounded-lg border border-border bg-card p-4 text-xs text-muted-foreground">
+          <div>
+            <dt className="inline font-medium">Signed in as: </dt>
+            <dd className="inline">{accountEmail || "unknown"}</dd>
+          </div>
+          <div>
+            <dt className="inline font-medium">Workspace: </dt>
+            <dd className="inline break-all">{backendHost}</dd>
+          </div>
+          {diagnostic ? (
+            <div>
+              <dt className="inline font-medium">Details: </dt>
+              <dd className="inline">{diagnostic}</dd>
+            </div>
+          ) : null}
+        </dl>
+        <div className="mt-8 flex gap-2">
+          <Button onClick={() => setAttempt((n) => n + 1)}>Try again</Button>
+          <Button variant="outline" onClick={signOut}>
+            Sign out
+          </Button>
+        </div>
       </div>
     );
   }
