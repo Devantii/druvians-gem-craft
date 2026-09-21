@@ -81,6 +81,7 @@ function Admin() {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
   const [diagnostic, setDiagnostic] = useState<string>("");
+  const backendHost = String(import.meta.env["VITE_SUPABASE_URL"] ?? "not configured");
   const [accountEmail, setAccountEmail] = useState<string>("");
   const [attempt, setAttempt] = useState(0);
 
