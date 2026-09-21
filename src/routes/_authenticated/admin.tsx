@@ -80,16 +80,62 @@ function Admin() {
   const queryClient = useQueryClient();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
+  const [diagnostic, setDiagnostic] = useState<string>("");
+  const [accountEmail, setAccountEmail] = useState<string>("");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    supabase.rpc("claim_first_admin").then(({ data, error }) => {
-      if (error) {
+    let cancelled = false;
+
+    const check = async () => {
+      setIsAdmin(null);
+      setDiagnostic("");
+
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const user = userData?.user ?? null;
+      if (cancelled) return;
+      setAccountEmail(user?.email ?? "");
+
+      if (userError || !user) {
         setIsAdmin(false);
+        setDiagnostic(
+          userError?.message ??
+            "No signed-in account was found. Sign in again, then reload this page.",
+        );
         return;
       }
-      setIsAdmin(Boolean(data));
-    });
-  }, []);
+
+      const claim = await supabase.rpc("claim_first_admin");
+      if (cancelled) return;
+
+      if (!claim.error && claim.data === true) {
+        setIsAdmin(true);
+        return;
+      }
+
+      // Fall back to a direct role lookup so an existing admin is never locked out
+      // when the claim call is rejected (for example because another admin exists).
+      const roles = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin");
+      if (cancelled) return;
+
+      if (!roles.error && (roles.data?.length ?? 0) > 0) {
+        setIsAdmin(true);
+        return;
+      }
+
+      setIsAdmin(false);
+      setDiagnostic(claim.error?.message ?? roles.error?.message ?? "");
+    };
+
+    void check();
+    return () => {
+      cancelled = true;
+    };
+  }, [attempt]);
 
   const products = useQuery({ ...adminProductsQuery, enabled: isAdmin === true });
   const categories = useQuery(categoriesQuery);
