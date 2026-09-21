@@ -208,12 +208,31 @@ function Admin() {
       <div className="mx-auto max-w-2xl px-4 py-20">
         <h1 className="font-display text-4xl font-semibold">Admin access required</h1>
         <p className="mt-4 text-sm text-muted-foreground">
-          This account does not have catalogue permissions. Ask an existing administrator to grant
-          you access, then reload this page.
+          This account does not have catalogue permissions yet. If you are the owner, make sure the
+          site is connected to the right workspace, then try again.
         </p>
-        <Button className="mt-8" variant="outline" onClick={signOut}>
-          Sign out
-        </Button>
+        <dl className="mt-6 space-y-1 rounded-lg border border-border bg-card p-4 text-xs text-muted-foreground">
+          <div>
+            <dt className="inline font-medium">Signed in as: </dt>
+            <dd className="inline">{accountEmail || "unknown"}</dd>
+          </div>
+          <div>
+            <dt className="inline font-medium">Workspace: </dt>
+            <dd className="inline break-all">{backendHost}</dd>
+          </div>
+          {diagnostic ? (
+            <div>
+              <dt className="inline font-medium">Details: </dt>
+              <dd className="inline">{diagnostic}</dd>
+            </div>
+          ) : null}
+        </dl>
+        <div className="mt-8 flex gap-2">
+          <Button onClick={() => setAttempt((n) => n + 1)}>Try again</Button>
+          <Button variant="outline" onClick={signOut}>
+            Sign out
+          </Button>
+        </div>
       </div>
     );
   }
