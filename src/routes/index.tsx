@@ -96,7 +96,7 @@ function Home() {
               </div>
               <div>
                 <dt className="text-xs uppercase tracking-widest text-accent">Min. order</dt>
-                <dd className="mt-1 font-display text-2xl">25 pcs</dd>
+                <dd className="mt-1 font-display text-2xl">50 pcs</dd>
               </div>
             </dl>
           </div>
